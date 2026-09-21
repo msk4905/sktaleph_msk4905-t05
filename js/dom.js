@@ -1,6 +1,7 @@
 // dom.js — DOM 요소 참조, 전역 상태값, 공용 유틸(showError/escapeHtml)
 
         const imageInput = document.getElementById('imageInput');
+        const dropzone = document.querySelector('.dropzone');
         const canvasBg = document.getElementById('canvasBg');
         const canvasDimmer = document.getElementById('canvasDimmer');
         const textContent = document.getElementById('textContent');

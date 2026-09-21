@@ -1,4 +1,4 @@
-// editor-state.js — 편집 상태 캡처/적용, 되돌리기, 정렬·화면비·글꼴·색상·이미지 업로드·초기화 컨트롤
+// editor-state.js — 편집 상태 캡처/적용, 되돌리기, 정렬·화면비·글꼴·색상·이미지 업로드(클릭/붙여넣기/드래그앤드롭 공통)·초기화 컨트롤
 
         // ---------- 상태 캡처 / 적용 (되돌리기·템플릿 로드·초기화가 공유) ----------
         function captureState() {
@@ -240,6 +240,60 @@
             const file = e.target.files[0];
             handleImageFile(file);
         });
+
+        // ---------- 드래그앤드롭 (경로 2) ----------
+        // 파일을 끌고 있는 중인지(텍스트 등 다른 드래그와 구분) 확인
+        function dragHasFiles(e) {
+            const types = e.dataTransfer && e.dataTransfer.types;
+            return !!types && Array.from(types).includes('Files');
+        }
+
+        function setDropActive(active) {
+            dropzone.classList.toggle('drag-over', active);
+        }
+
+        dropzone.addEventListener('dragenter', (e) => {
+            if (!dragHasFiles(e)) return;
+            e.preventDefault();
+            setDropActive(true);
+        });
+        dropzone.addEventListener('dragover', (e) => {
+            if (!dragHasFiles(e)) return;
+            e.preventDefault(); // 이게 없으면 drop 이벤트가 발생하지 않는다
+            e.dataTransfer.dropEffect = 'copy';
+            setDropActive(true);
+        });
+        dropzone.addEventListener('dragleave', (e) => {
+            if (!dragHasFiles(e)) return;
+            setDropActive(false); // 자식 요소는 CSS에서 pointer-events:none 이라 영역 이탈 시에만 발생
+        });
+        dropzone.addEventListener('drop', (e) => {
+            if (!dragHasFiles(e)) return;
+            e.preventDefault();
+            setDropActive(false);
+
+            const files = Array.from(e.dataTransfer.files || []);
+            if (files.length === 0) return;
+
+            if (files.length > 1) {
+                // 여러 장이 한꺼번에 들어오면 어떤 것도 적용하지 않고 기존 배경 유지
+                setFileStatus('❌ 한 번에 한 장만 가능합니다 (기존 이미지는 유지됩니다)', true);
+                showError('한 번에 한 장만 가능합니다.');
+                return;
+            }
+            // 형식 검사·디코딩 검증·오류 안내·되돌리기 스냅샷은 기존 공통 함수가 처리
+            handleImageFile(files[0]);
+        });
+
+        // 드롭존 밖에 파일을 놓았을 때 브라우저가 파일을 열어버리는 것을 방지하고, 강조 표시도 정리
+        window.addEventListener('dragover', (e) => {
+            if (dragHasFiles(e)) e.preventDefault();
+        });
+        window.addEventListener('drop', (e) => {
+            if (dragHasFiles(e)) e.preventDefault();
+            setDropActive(false);
+        });
+        window.addEventListener('dragend', () => setDropActive(false));
 
         // 슬라이더 ↔ 숫자 직접입력 양방향 동기화 (슬라이드가 힘들 때 숫자로 바로 입력 가능)
         function wireSlider(rangeEl, numEl, apply) {

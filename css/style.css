@@ -102,6 +102,10 @@
             border-radius: var(--radius); cursor: pointer; text-align: center;
         }
         .dropzone:hover { border-color: var(--accent); }
+        /* 자식 요소로 드래그가 넘어갈 때 dragleave가 잘못 발생하지 않도록 이벤트를 드롭존 자신만 받게 한다 */
+        .dropzone > * { pointer-events: none; }
+        /* 파일을 끌어서 영역 위에 올려둔 동안의 강조 표시 */
+        .dropzone.drag-over { border-color: var(--accent); background: var(--accent-soft); }
         .dropzone svg { color: var(--text-sub); }
         .dropzone span { font-size: 0.8rem; color: var(--text-sub); }
         .file-status { font-size: 0.72rem; padding: 0.4rem 0.6rem; border-radius: 7px; display: inline-block; margin-top: 0.6rem; min-height: 1em; color: var(--text-sub); }
