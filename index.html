@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>짤·카드 스튜디오</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&family=Black+Han+Sans&family=Gaegu:wght@400;700&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-mark"></div>
+        <h1>짤·카드 스튜디오</h1>
+    </header>
+
+    <main>
+        <!-- Panel 1: 편집 도구 -->
+        <div class="panel">
+            <div>
+                <div class="section-title">이미지</div>
+                <label class="dropzone">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <span>PNG, JPEG 파일을 선택하세요</span>
+                    <input type="file" id="imageInput" accept="image/png, image/jpeg" style="display:none;">
+                </label>
+                <span id="fileStatus" class="file-status"></span>
+            </div>
+
+            <div>
+                <div class="section-title">문구</div>
+                <textarea id="textContent" placeholder="문구를 입력하세요">안녕하세요! 짤·카드 스튜디오입니다 ✨</textarea>
+            </div>
+
+            <div>
+                <div class="section-title">스타일</div>
+                <div class="section-body">
+                    <div class="form-group">
+                        <label>텍스트 정렬</label>
+                        <div class="seg-tabs">
+                            <button class="seg-btn" data-align="left">좌측</button>
+                            <button class="seg-btn active" data-align="center">중앙</button>
+                            <button class="seg-btn" data-align="right">우측</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row-between">
+                            <label>글자 크기</label>
+                            <div class="value-input-wrap">
+                                <input type="number" id="fontSizeNum" class="value-input" min="12" max="72" value="24">
+                                <span class="value-unit">px</span>
+                            </div>
+                        </div>
+                        <input type="range" id="fontSize" min="12" max="72" value="24" style="accent-color: var(--accent); width:100%;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>글꼴</label>
+                        <div class="style-row">
+                            <div class="seg-tabs font-tabs" style="flex:1;">
+                                <button class="seg-btn active" data-font="impact" style="font-family:'Black Han Sans', sans-serif;">임팩트체</button>
+                                <button class="seg-btn" data-font="hand" style="font-family:'Gaegu', sans-serif;">손글씨체</button>
+                                <button class="seg-btn" data-font="gothic" style="font-family:'Gothic A1', sans-serif;">고딕체</button>
+                            </div>
+                            <button id="boldToggle" class="bold-toggle" aria-label="굵게" title="굵게">B</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>글자 색상</label>
+                        <div class="swatch-row">
+                            <button class="swatch" data-color="#ffffff" style="background:#ffffff;" aria-label="흰색"></button>
+                            <button class="swatch" data-color="#1c1a17" style="background:#1c1a17;" aria-label="검정"></button>
+                            <button class="swatch" data-color="#7c3aed" style="background:#7c3aed;" aria-label="보라"></button>
+                            <button class="swatch" data-color="#f5b700" style="background:#f5b700;" aria-label="노랑"></button>
+                            <button class="swatch" data-color="#e23d28" style="background:#e23d28;" aria-label="빨강"></button>
+                            <div class="palette-wrap">
+                                <div class="palette-ring"></div>
+                                <input type="color" id="paletteInput" value="#ffffff" aria-label="전체 팔레트에서 색상 선택">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>문구 · 이미지 위치</label>
+                        <div class="position-hint">캔버스에서 드래그로 이동 · 클릭 후 방향키(Shift+방향키=10px) · 이미지 위 휠로 확대/축소</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="section-title">마무리</div>
+                <div class="section-body">
+                    <div class="form-group">
+                        <div class="row-between">
+                            <label>이미지 어두움 (디머)</label>
+                            <div class="value-input-wrap">
+                                <input type="number" id="dimmerNum" class="value-input" min="0" max="100" value="0">
+                                <span class="value-unit">%</span>
+                            </div>
+                        </div>
+                        <input type="range" id="dimmerRange" min="0" max="100" value="0" style="accent-color: var(--accent); width:100%;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>미니 워터마크 (우측 하단)</label>
+                        <input type="text" id="watermarkInput" placeholder="예: @MyStudio">
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="copyBtn">클립보드 복사</button>
+                <button class="btn" id="downloadBtn">이미지 다운로드</button>
+            </div>
+        </div>
+
+        <!-- Preview Workspace -->
+        <div class="preview-container">
+            <div class="aspect-row">
+                <div class="aspect-tabs">
+                    <button class="aspect-btn active" data-ratio="1:1">1:1 정사각형</button>
+                    <button class="aspect-btn" data-ratio="4:5">4:5 세로형</button>
+                    <button class="aspect-btn" data-ratio="9:16">9:16 스토리</button>
+                </div>
+                <button id="undoBtn" class="icon-btn" aria-label="되돌리기" title="되돌리기 (Ctrl+Z)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M3 13a9 9 0 1 0 3-7.7L3 7"></path></svg>
+                </button>
+            </div>
+            <div class="canvas-box" id="canvasBox" style="width: 300px; height: 300px;">
+                <div id="canvasBg" class="canvas-bg" tabindex="0" aria-label="배경 이미지 (드래그로 위치 이동, 방향키로 미세 이동)"></div>
+                <div id="canvasDimmer" class="canvas-dimmer"></div>
+                <div id="previewWatermark" class="preview-watermark"></div>
+                <div id="previewText" class="canvas-text" tabindex="0" aria-label="문구 (드래그로 위치 이동, 방향키로 미세 이동)" style="text-align: center; font-size: 24px; color: #ffffff; font-family: 'Black Han Sans', sans-serif;">안녕하세요! 짤·카드 스튜디오입니다 ✨</div>
+            </div>
+
+            <div class="download-actions">
+                <div class="shortcut-hint">Ctrl+Enter 다운로드 · Ctrl+Z 되돌리기 · Ctrl+S 템플릿 저장</div>
+            </div>
+
+            <div class="history-block">
+                <div class="section-title" style="margin-bottom:0.6rem;">최근 다운로드</div>
+                <div class="history-row" id="historyRow">
+                    <span class="history-empty">다운로드하면 여기 표시됩니다</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 2: 템플릿 및 JSON 관리 -->
+        <div class="panel">
+            <div>
+                <div class="section-title">템플릿</div>
+                <div class="form-group">
+                    <label>템플릿 이름 (동일 이름 저장 시 덮어쓰기)</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="templateName" value="기본 템플릿" style="flex:1;">
+                        <button class="btn" id="saveTemplateBtn" style="flex:0; padding: 0.625rem 1rem;">저장</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="search-wrap">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="templateSearch" placeholder="템플릿 검색">
+                </div>
+                <div class="seg-tabs" style="width:fit-content;">
+                    <button class="seg-btn active" id="sortRecentBtn" style="padding:0.4rem 0.75rem;">최신순</button>
+                    <button class="seg-btn" id="sortNameBtn" style="padding:0.4rem 0.75rem;">이름순</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>저장된 목록</label>
+                <div class="item-list" id="templateList"></div>
+            </div>
+
+            <div style="height: 1px; background: var(--border);"></div>
+
+            <div class="form-group">
+                <label>JSON 데이터 관리</label>
+                <div class="util-row">
+                    <button class="util-btn" id="exportJsonBtn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        내보내기
+                    </button>
+                    <label class="util-btn" style="cursor:pointer;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        가져오기
+                        <input type="file" id="importJsonInput" accept=".json" style="display:none;">
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn btn-danger" id="resetBtn">전체 초기화하기</button>
+        </div>
+    </main>
+
+    <div id="error-toast">알림 메시지</div>
+
+
+    <script src="js/dom.js"></script>
+    <script src="js/editor-state.js"></script>
+    <script src="js/position-control.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/canvas-export.js"></script>
+    <script src="js/shortcuts.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
