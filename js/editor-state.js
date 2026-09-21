@@ -198,12 +198,11 @@
             showError(`파일을 불러올 수 없습니다: ${reason}`);
         }
 
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
+        function handleImageFile(file) {
             if (!file) return;
 
             if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
-                rejectImageFile(file.name, 'PNG, JPEG 형식이 아닙니다');
+                rejectImageFile(file.name || '파일', 'PNG, JPEG 형식이 아닙니다');
                 return;
             }
 
@@ -224,17 +223,22 @@
                     imageZoom = 100;
                     updateImagePosition();
                     updateImageZoom();
-                    setFileStatus(`✅ ${file.name} 불러옴`, false);
+                    setFileStatus(`✅ ${file.name || '이미지'} 불러옴`, false);
                 };
                 testImg.onerror = () => {
-                    rejectImageFile(file.name, '이미지 데이터를 해석할 수 없습니다');
+                    rejectImageFile(file.name || '파일', '이미지 데이터를 해석할 수 없습니다');
                 };
                 testImg.src = event.target.result;
             };
             reader.onerror = () => {
-                rejectImageFile(file.name, '파일을 읽는 중 오류가 발생했습니다');
+                rejectImageFile(file.name || '파일', '파일을 읽는 중 오류가 발생했습니다');
             };
             reader.readAsDataURL(file);
+        }
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            handleImageFile(file);
         });
 
         // 슬라이더 ↔ 숫자 직접입력 양방향 동기화 (슬라이드가 힘들 때 숫자로 바로 입력 가능)
